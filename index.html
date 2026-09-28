@@ -181,7 +181,7 @@ textarea:focus{border-color:var(--accent);background:#fff;}
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmzgpChdkc2y58Twi-W_D0uWQJF7t0QBbndeNiyvF86z2OZ1fXNGxMjVVRBs6wcksqPA/exec";
 
 // ── TIEMPOS POR MÓDULO (segundos) ──
-const MOD_TIMES = { 1:90, 2:120, 3a:90, 3b:150, 4:120, 5:120, 6:60 };
+const MOD_TIMES = { 1:90, 2:120, 3:90, 4:120, 5:360, 6:360 };
 
 // ── INTROS DE MÓDULO ──
 const MOD_INTROS = {
@@ -393,7 +393,7 @@ function renderQuestion(){
     html+='<div>';
     q.items.forEach(item=>{
       html+='<div class="likert-row"><div class="likert-stmt">'+item.stmt+'</div><div class="likert-scale">';
-      for(let v=1;v<=5;v++)html+='<button class="likert-btn" id="lk-'+item.id+'-'+v+'" onclick="selectLikert(''+item.id+'','+v+')">'+v+'</button>';
+      for(let v=1;v<=5;v++){html+='<button class="likert-btn" id="lk-'+item.id+'-'+v+'" data-id="'+item.id+'" data-v="'+v+'" onclick="selectLikertBtn(this)">'+v+'</button>';}
       html+='</div><div class="likert-labels"><span>Nada de acuerdo</span><span>Totalmente de acuerdo</span></div></div>';
     });
     html+='</div>';
@@ -418,6 +418,11 @@ function selectOpt(i){
   answers[q.id]={index:i,value:q.options[i]};
 }
 
+function selectLikertBtn(btn){
+  const id=btn.getAttribute('data-id');
+  const v=parseInt(btn.getAttribute('data-v'));
+  selectLikert(id,v);
+}
 function selectLikert(itemId,val){
   for(let v=1;v<=5;v++){const b=document.getElementById('lk-'+itemId+'-'+v);if(b)b.classList.remove('selected');}
   const b=document.getElementById('lk-'+itemId+'-'+val);if(b)b.classList.add('selected');
