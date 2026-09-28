@@ -446,10 +446,16 @@ function renderRanking(){
 }
 
 function showDetailByRank(btn){
-  const i=parseInt(btn.getAttribute('data-i'));
-  const c=window._sortedCandidates[i];
-  if(!c)return;
-  showDetail(c);
+  try{
+    const i=parseInt(btn.getAttribute('data-i'));
+    if(!window._sortedCandidates||!window._sortedCandidates[i]){
+      // fallback: re-sort and try again
+      window._sortedCandidates=[...ALL].map((c,idx)=>({...c,_s:calcMCQ(c),_idx:idx})).sort((a,b)=>b._s-a._s);
+    }
+    const c=window._sortedCandidates[i];
+    if(!c){alert('No se encontró el candidato.');return;}
+    showDetail(c);
+  }catch(e){console.error('showDetailByRank error:',e);}
 }
 
 // ── MÓDULOS ──────────────────────────────────────────────────────────────────
@@ -522,8 +528,7 @@ function showDetail(c){
     +'</div>';
 
   // ── Gallup cards ──
-  document.getElementById('det-summary').innerHTML+=
-    '<div class="section-title" style="margin-top:24px">Fortalezas Gallup</div>'
+    +'<div class="section-title" style="margin-top:24px">Fortalezas Gallup</div>'
     +'<div class="gallup-grid">'
     +gallup.map((g,idx)=>'<div class="gallup-card" style="border-top:3px solid '+g.color+'">'
       +'<div style="font-size:11px;color:var(--ink2);margin-bottom:4px">#'+(idx+1)+'</div>'
