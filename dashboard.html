@@ -816,10 +816,10 @@ function showDetail(codigo) {
       + rubricHtml
       + '<div class="open-a">' + (ans || '<em style="color:var(--text-dim)">Sin respuesta</em>') + '</div>'
       + '<div class="open-actions">'
-        + '<button class="btn btn-ai" onclick="evalWithAI('' + codigo + '','' + q.key + '',`' + escapeBacktick(ans) + '`,`' + escapeBacktick(q.label) + '`)">✦ Evaluar con IA</button>'
+        + '<button class="btn btn-ai" data-codigo="' + codigo + '" data-key="' + q.key + '" data-ans="' + escapeBacktick(ans).replace(/"/g,"&quot;") + '" data-label="' + escapeBacktick(q.label).replace(/"/g,"&quot;") + '" onclick="evalWithAIBtn(this)">✦ Evaluar con IA</button>'
         + '<span style="font-size:13px;color:var(--text-dim)">o asigna nota:</span>'
         + '<input class="score-input" type="number" min="1" max="5" step="0.5" id="score-' + q.key + '-' + codigo + '" value="' + savedScore + '" placeholder="1-5">'
-        + '<button class="save-score-btn" onclick="saveScore('' + codigo + '','' + q.key + '')">Guardar</button>'
+        + '<button class="save-score-btn" data-codigo="' + codigo + '" data-key="' + q.key + '" onclick="saveScoreBtn(this)">Guardar</button>'
       + '</div>'
       + '<div class="ai-result" id="ai-' + q.key + '-' + codigo + '"></div>'
       + '</div>';
@@ -855,6 +855,14 @@ function escapeBacktick(str) {
 // ═══════════════════════════════════════
 //  EVALUACIÓN CON IA
 // ═══════════════════════════════════════
+function evalWithAIBtn(btn) {
+  const codigo = btn.getAttribute('data-codigo');
+  const qkey   = btn.getAttribute('data-key');
+  const ans    = btn.getAttribute('data-ans');
+  const label  = btn.getAttribute('data-label');
+  evalWithAI(codigo, qkey, ans, label);
+}
+
 async function evalWithAI(codigo, qkey, answer, qlabel) {
   const resultEl = document.getElementById(`ai-${qkey}-${codigo}`);
   resultEl.classList.add('show');
@@ -927,6 +935,12 @@ Responde en JSON con este formato exacto:
 // ═══════════════════════════════════════
 //  GUARDAR NOTAS ABIERTAS
 // ═══════════════════════════════════════
+function saveScoreBtn(btn) {
+  const codigo = btn.getAttribute('data-codigo');
+  const qkey   = btn.getAttribute('data-key');
+  saveScore(codigo, qkey);
+}
+
 function saveScore(codigo, qkey) {
   const inp = document.getElementById(`score-${qkey}-${codigo}`);
   if (!inp) return;
