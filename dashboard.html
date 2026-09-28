@@ -582,24 +582,27 @@ function renderRanking() {
     .map(c => ({ ...c, _score: calcScore(c) }))
     .sort((a, b) => b._score - a._score);
 
-  tbody.innerHTML = sorted.map((c, i) => {
+  let rows = '';
+  sorted.forEach(function(c, i) {
     const pct = Math.round((c._score / 23) * 100);
     const cls = pct >= 70 ? 'pill-hi' : pct >= 50 ? 'pill-mid' : 'pill-lo';
     const fecha = c.Timestamp ? new Date(c.Timestamp).toLocaleDateString('es-CO') : '—';
     const openAvg = getOpenScore(c['candidato.codigo'] || c.codigo);
-    const openStr = openAvg !== null ? `${openAvg}/5` : '<span style="color:var(--text-dim)">Pendiente</span>';
-
-    return `<tr>
-      <td style="color:var(--text-dim)">${i+1}</td>
-      <td><strong>${c['candidato.nombre'] || c.nombre || '—'}</strong></td>
-      <td style="font-size:13px;color:var(--text-dim)">${c['candidato.codigo'] || c.codigo || '—'}</td>
-      <td style="font-size:13px;color:var(--text-dim)">${fecha}</td>
-      <td><span class="score-pill ${cls}">${c._score} / 23</span></td>
-      <td>${pct}%</td>
-      <td>${openStr}</td>
-      <td><button class="btn btn-sm" onclick="showDetail('${c['candidato.codigo'] || c.codigo}')">Ver detalle</button></td>
-    </tr>`;
-  }).join('');
+    const openStr = openAvg !== null ? openAvg + '/5' : '<span style="color:var(--text-dim)">Pendiente</span>';
+    const nombre = c['candidato.nombre'] || c.nombre || '—';
+    const cod = (c['candidato.codigo'] || c.codigo || '').replace(/'/g, '');
+    rows += '<tr>'
+      + '<td style="color:var(--text-dim)">' + (i+1) + '</td>'
+      + '<td><strong>' + nombre + '</strong></td>'
+      + '<td style="font-size:13px;color:var(--text-dim)">' + cod + '</td>'
+      + '<td style="font-size:13px;color:var(--text-dim)">' + fecha + '</td>'
+      + '<td><span class="score-pill ' + cls + '">' + c._score + ' / 23</span></td>'
+      + '<td>' + pct + '%</td>'
+      + '<td>' + openStr + '</td>'
+      + '<td><button class="btn btn-sm" onclick="showDetailByIndex(' + i + ')">Ver detalle</button></td>'
+      + '</tr>';
+  });
+  tbody.innerHTML = rows;
 }
 
 // ═══════════════════════════════════════
@@ -658,6 +661,14 @@ function renderModulos() {
 // ═══════════════════════════════════════
 //  DETALLE CANDIDATO
 // ═══════════════════════════════════════
+function showDetailByIndex(i) {
+  const sorted = [...allCandidates]
+    .map(c => ({ ...c, _score: calcScore(c) }))
+    .sort((a, b) => b._score - a._score);
+  const codigo = sorted[i]['candidato.codigo'] || sorted[i].codigo;
+  showDetail(codigo);
+}
+
 function showDetail(codigo) {
   const c = allCandidates.find(x => (x['candidato.codigo'] || x.codigo) === codigo);
   if (!c) return;
