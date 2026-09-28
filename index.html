@@ -185,17 +185,17 @@ const MOD_TIMES = { 1:90, 2:120, 3a:90, 3b:150, 4:120, 5:120, 6:60 };
 
 // ── INTROS DE MÓDULO ──
 const MOD_INTROS = {
-  1: { tag:"Módulo 1", title:"Razonamiento numérico y lectura de datos", desc:"Usa la información de cada tabla para responder." },
-  2: { tag:"Módulo 2", title:"Comprensión lectora", desc:"Responde únicamente con base en los textos." },
+  1: { tag:"Módulo 1", title:"Razonamiento numérico y lectura de datos", desc:"Usa la información de cada tabla para responder. Tendrás 1 minuto 30 segundos por pregunta." },
+  2: { tag:"Módulo 2", title:"Comprensión lectora", desc:"Responde únicamente con base en los textos. Tendrás 2 minutos por pregunta." },
   3: { tag:"Módulo 3", title:"Identificación de datos faltantes y propuesta de análisis", desc:"En cada escenario, selecciona el dato más crítico y plantea un análisis adicional en máximo 2 frases." },
-  4: { tag:"Módulo 4", title:"Juicio situacional", desc:"Selecciona la opción que represente la mejor primera acción en cada situación." },
-  5: { tag:"Módulo 5", title:"Pensamiento creativo", desc:"" },
-  6: { tag:"Módulo 6", title:"Perfil e intereses", desc:"" }
+  4: { tag:"Módulo 4", title:"Juicio situacional", desc:"Selecciona la opción que represente la mejor primera acción en cada situación. Tendrás 2 minutos por pregunta." },
+  5: { tag:"Módulo 5", title:"Pensamiento creativo", desc:"Tendrás 6 minutos para desarrollar tu idea. Propón una idea sencilla para que una marca conecte mejor con jóvenes de 18 a 24 años. Incluye: necesidad u oportunidad, idea y forma de activación." },
+  6: { tag:"Módulo 6", title:"Perfil e intereses", desc:"Esta sección no tiene respuestas correctas o incorrectas. Marca qué tan de acuerdo estás con cada afirmación: 1 Nada de acuerdo · 2 Poco de acuerdo · 3 Neutral · 4 De acuerdo · 5 Totalmente de acuerdo." },
+  7: { tag:"Módulo 6", title:"Experiencia e intereses", desc:"Cuéntanos sobre ti: proyectos, herramientas y disponibilidad para la práctica." }
 };
 
 // ── PREGUNTAS ──
 const questions = [
-  {mod:"Módulo 1",modN:1,type:"intro",id:"intro_m1",seconds:8,title:"Módulo 1 · Razonamiento numérico y lectura de datos",desc:"Usa la información de cada tabla para responder. Tendrás 1 minuto 30 segundos por pregunta."},
   // MOD 1
   {mod:1,modN:1,type:"radio",id:"m1q1",seconds:90,
    context:`<table><tr><th>Aplicación</th><th>Mes 1 (miles)</th><th>Mes 6 (miles)</th></tr><tr><td>Muévete – bicicletas</td><td>25</td><td>60</td></tr><tr><td>UrbanGo – scooters</td><td>40</td><td>55</td></tr><tr><td>BusFácil – buses</td><td>90</td><td>85</td></tr><tr><td>RideCity – mototaxi</td><td>15</td><td>45</td></tr></table>`,
@@ -210,7 +210,6 @@ const questions = [
   {mod:1,modN:1,type:"radio",id:"m1q6",seconds:90,text:"¿Cuál es la lectura estratégica mejor sustentada por estos datos?",options:["El marketplace debería invertir únicamente en más publicidad","Mejorar fotos, descripciones y cuidado del empaque podría reducir una parte relevante de las devoluciones","El principal problema es que los compradores cambian de opinión","No es posible proponer ninguna acción con esta información"]},
   {mod:1,modN:1,type:"radio",id:"m1q7",seconds:90,text:"Una plataforma de streaming tenía 1,2 millones de suscriptores y creció 45% en un año. ¿Aproximadamente cuántos suscriptores tiene ahora?",options:["1,45 millones","1,65 millones","1,74 millones","2,00 millones"]},
   {mod:1,modN:1,type:"radio",id:"m1q8",seconds:90,text:"Una aplicación de ejercicio retiene cada mes al 85% de sus usuarios activos del mes anterior. Si hoy tiene 10.000 usuarios, ¿aproximadamente cuántos seguirán activos dentro de 3 meses?",options:["8.500","7.225","6.141","5.000"]},
-  {mod:"Módulo 2",modN:2,type:"intro",id:"intro_m2",seconds:8,title:"Módulo 2 · Comprensión lectora",desc:"Responde únicamente con base en los textos. Tendrás 2 minutos por pregunta."},
   // MOD 2 — Lectura 1 (Q9-11)
   {mod:2,modN:2,type:"radio",id:"m2q9",seconds:120,
    reading:`<div class="reading-box"><strong>Lectura 1 – Economía circular en retail</strong>Cada vez más marcas de moda y consumo están adoptando modelos de economía circular, en los que buscan extender la vida útil de un producto en lugar de simplemente venderlo y reemplazarlo. Programas de recompra, reparación y reventa de artículos usados permiten a las empresas mantener el contacto con el cliente después de la primera compra, generar nuevos ingresos y responder a una creciente exigencia ambiental de los consumidores más jóvenes. Sin embargo, implementar estos programas no es sencillo: requiere logística inversa, sistemas para evaluar el estado de los productos devueltos y, en muchos casos, cambiar la forma en que se mide el éxito comercial, tradicionalmente basado solo en el volumen de ventas nuevas.</div>`,
@@ -231,7 +230,6 @@ const questions = [
   {mod:2,modN:2,type:"radio",id:"m2q14",seconds:120,
    reading:`<div class="reading-box"><strong>Lectura 2 – Aprendizaje híbrido en educación</strong>El aprendizaje híbrido, que combina sesiones presenciales con contenido y actividades en línea, se ha convertido en el modelo preferido de muchas instituciones educativas. Sus defensores argumentan que permite personalizar el ritmo de cada estudiante y aprovechar mejor el tiempo en el aula para discusión y práctica, en lugar de exposiciones magistrales. No obstante, distintos estudios muestran resultados mixtos: el éxito del modelo depende en gran medida de la disciplina del estudiante para completar el contenido en línea y del acompañamiento docente durante ese proceso, más que del modelo en sí mismo.</div>`,
    text:"¿Cuál conclusión NO está respaldada por el texto?",options:["El modelo puede aprovechar el aula para práctica y discusión","Los estudios muestran resultados mixtos","El modelo híbrido garantiza mejores resultados que el modelo presencial","La disciplina del estudiante influye en el resultado"]},
-  {mod:"Módulo 3",modN:3,type:"intro",id:"intro_m3",seconds:8,title:"Módulo 3 · Identificación de datos faltantes y propuesta de análisis",desc:"En cada escenario, selecciona el dato más crítico y plantea un análisis adicional en máximo 2 frases."},
   // MOD 3
   {mod:3,modN:3,type:"radio",id:"m3q15",seconds:90,
    context:`<p style="font-size:14px;line-height:1.7"><strong>Escenario – Streaming</strong><br>Una plataforma reporta que su tasa de cancelación mensual subió de 4% a 9% en el último trimestre. El equipo concluye que el aumento se debe al incremento del precio de la suscripción realizado el mes pasado. Solo cuenta con la tasa de cancelación mensual y la fecha del cambio de precio.</p>`,
@@ -249,19 +247,16 @@ const questions = [
    context:`<p style="font-size:14px;line-height:1.7"><strong>Escenario – Deporte y entretenimiento</strong><br>Un equipo deportivo observa que la asistencia de aficionados de 18 a 25 años bajó 30% este año y concluye que se debe al aumento del precio de las boletas.</p>`,
    text:"¿Qué dato es más crítico para validar esa conclusión?",options:["Si el aumento afectó de manera diferente al segmento joven según tipo de boleta o zona","El resultado deportivo de la temporada anterior","El color de la camiseta","El número de patrocinadores"]},
   {mod:3,modN:3,type:"open",id:"m3q18b",seconds:150,text:"¿Qué análisis propondrías para entender mejor la caída de asistencia joven? (máximo 2 frases)",maxWords:80},
-  {mod:"Módulo 4",modN:4,type:"intro",id:"intro_m4",seconds:8,title:"Módulo 4 · Juicio situacional",desc:"Selecciona la opción que represente la mejor primera acción en cada situación. Tendrás 2 minutos por pregunta."},
   // MOD 4
   {mod:4,modN:4,type:"radio",id:"m4q19",seconds:120,text:"Un cliente solicita un cambio de última hora sobre una entrega que debe salir en 2 horas. El equipo aún no termina la versión anterior. ¿Qué harías primero?",options:["Aceptar el cambio y pedir al equipo que trabaje más rápido, sin aclarar impactos","Confirmar el impacto en tiempo y calidad y proponer alternativas de prioridad, alcance u horario","Decir que no es posible sin ofrecer alternativas","Ignorar la solicitud y continuar con el plan"]},
   {mod:4,modN:4,type:"radio",id:"m4q20",seconds:120,text:"En un trabajo en equipo, una persona propone una idea que consideras débil, pero el resto la acepta por falta de tiempo. ¿Qué haces?",options:["Guardas silencio para evitar conflicto","Explicas tu punto con una razón concreta, propones una alternativa breve y respetas la decisión final","Insistes en tu idea sin escuchar a los demás","Trabajas por tu cuenta en otra versión sin avisar"]},
   {mod:4,modN:4,type:"radio",id:"m4q21",seconds:120,text:"Mientras analizas datos para una propuesta encuentras un número que no coincide con el resto. Verificarlo puede tomar más tiempo del disponible. ¿Qué haces?",options:["Usas el dato para no retrasar la entrega","Lo marcas como pendiente de validación y comunicas la duda al equipo o responsable","Eliminas el dato sin decir nada","Lo reemplazas por un número que parezca coherente"]},
   {mod:4,modN:4,type:"radio",id:"m4q22",seconds:120,text:"Durante una presentación, el panel te hace una pregunta para la que no tienes una respuesta clara. ¿Cómo reaccionas?",options:["Improvisas una respuesta que suene segura","Reconoces que no tienes el dato exacto, compartes tu razonamiento con la información disponible y ofreces validarlo","Cambias de tema","Guardas silencio y esperas que alguien responda"]},
   {mod:4,modN:4,type:"radio",id:"m4q23",seconds:120,text:"Faltan 20 minutos para presentar un pitch y el equipo aún no acuerda cómo cerrarlo. ¿Qué haces?",options:["Propones una estructura simple, acuerdan responsables y reservan tiempo para practicar","Continúan discutiendo la mejor opción hasta el último minuto","Decides el cierre sin consultar","Sugieres improvisarlo durante la presentación"]},
-  {mod:"Módulo 5",modN:5,type:"intro",id:"intro_m5",seconds:8,title:"Módulo 5 · Pensamiento creativo",desc:"Tendrás 6 minutos para desarrollar tu idea. Propón una idea sencilla para que una marca conecte mejor con jóvenes de 18 a 24 años. Incluye: necesidad u oportunidad, idea y forma de activación."},
   // MOD 5
-  {mod:5,modN:5,type:"open",id:"m5q24",seconds:120,text:"En máximo 80 palabras, propón una idea sencilla para que una marca de cualquier categoría conecte mejor con jóvenes de 18 a 24 años. Elige la categoría e incluye: necesidad u oportunidad, idea y forma de activación.",maxWords:80},
-  {mod:"Módulo 6",modN:6,type:"intro",id:"intro_m6",seconds:8,title:"Módulo 6 · Perfil e intereses",desc:"Esta sección no tiene respuestas correctas o incorrectas. Marca qué tan de acuerdo estás con cada afirmación: 1 Nada de acuerdo · 2 Poco de acuerdo · 3 Neutral · 4 De acuerdo · 5 Totalmente de acuerdo."},
+  {mod:5,modN:5,type:"open",id:"m5q24",seconds:360,text:"En máximo 80 palabras, propón una idea sencilla para que una marca de cualquier categoría conecte mejor con jóvenes de 18 a 24 años. Elige la categoría e incluye: necesidad u oportunidad, idea y forma de activación.",maxWords:80},
   // MOD 6
-  {mod:6,modN:6,type:"likert",id:"m6_perfil",seconds:60,text:"Indica qué tan de acuerdo estás con cada afirmación.<br><span style='font-size:13px;color:var(--ink-light)'>1 = Nada de acuerdo · 5 = Totalmente de acuerdo</span>",items:[
+  {mod:6,modN:6,type:"likert",id:"m6_perfil",seconds:360,text:"Indica qué tan de acuerdo estás con cada afirmación.<br><span style='font-size:13px;color:var(--ink-light)'>1 = Nada de acuerdo · 5 = Totalmente de acuerdo</span>",items:[
     {id:"l1",stmt:"Me interesa automatizar procesos de comunicación con clientes."},
     {id:"l2",stmt:"Disfruto pensar en flujos y secuencias de mensajes más que en el contenido creativo."},
     {id:"l3",stmt:"Disfruto trabajar con bases de datos y encontrar patrones."},
@@ -279,15 +274,14 @@ const questions = [
     {id:"l15",stmt:"Prefiero pensar en la estrategia y el porqué detrás de una campaña o proyecto."},
     {id:"l16",stmt:"Disfruto conectar datos con decisiones de negocio."}
   ]},
-  {mod:"Módulo 6",modN:6,type:"intro",id:"intro_m6b",seconds:8,title:"Experiencia e intereses",desc:"Cuéntanos sobre ti: proyectos, herramientas y disponibilidad para la práctica."},
-  {mod:6,modN:6,type:"open",id:"m6q25",seconds:60,text:"¿Qué tipo de proyecto te gustaría desarrollar durante tu práctica en Accenture Song? (máximo 4 líneas)",maxWords:120},
-  {mod:6,modN:6,type:"open",id:"m6q26",seconds:60,text:"Cuéntanos brevemente sobre un proyecto académico, extracurricular, laboral o personal del que te sientas orgulloso/a. ¿Cuál fue tu aporte? (máximo 5 líneas)",maxWords:150},
-  {mod:6,modN:6,type:"open",id:"m6q27",seconds:60,text:"¿Qué herramientas has utilizado? Incluye hojas de cálculo, visualización, investigación, diseño, programación, automatización, analítica o gestión de proyectos. Indica tu nivel aproximado.",maxWords:120},
-  {mod:6,modN:6,type:"radio",id:"m6q28",seconds:60,text:"Durante el periodo de práctica, ¿tendrás materias, tesis, monitorías, actividades extracurriculares u otras responsabilidades académicas?",options:["No","Sí"]},
-  {mod:6,modN:6,type:"open",id:"m6q28b",seconds:60,text:"Si tendrás otras responsabilidades, descríbelas e indica cuántas horas por semana requieren. (Si respondiste No, escribe 'No aplica')",maxWords:80},
-  {mod:6,modN:6,type:"radio",id:"m6q29",seconds:60,text:"¿Cuántas horas semanales estimas que podrás dedicar a la práctica?",options:["Menos de 30 horas","Entre 30 y 39 horas","40 horas","Más de 40 horas"]},
-  {mod:6,modN:6,type:"open",id:"m6q30",seconds:60,text:"¿Tu universidad exige alguna condición particular para autorizar la práctica? (fechas, número de horas, convenio, documentación, etc.)",maxWords:100},
-  {mod:6,modN:6,type:"open",id:"m6q31",seconds:60,text:"¿En qué fecha podrías iniciar tu práctica? (dd/mm/aaaa)",maxWords:20}
+  {mod:7,modN:7,type:"open",id:"m6q25",seconds:120,text:"¿Qué tipo de proyecto te gustaría desarrollar durante tu práctica en Accenture Song? (máximo 4 líneas)",maxWords:120},
+  {mod:7,modN:7,type:"open",id:"m6q26",seconds:120,text:"Cuéntanos brevemente sobre un proyecto académico, extracurricular, laboral o personal del que te sientas orgulloso/a. ¿Cuál fue tu aporte? (máximo 5 líneas)",maxWords:150},
+  {mod:7,modN:7,type:"open",id:"m6q27",seconds:120,text:"¿Qué herramientas has utilizado? Incluye hojas de cálculo, visualización, investigación, diseño, programación, automatización, analítica o gestión de proyectos. Indica tu nivel aproximado.",maxWords:120},
+  {mod:7,modN:7,type:"radio",id:"m6q28",seconds:90,text:"Durante el periodo de práctica, ¿tendrás materias, tesis, monitorías, actividades extracurriculares u otras responsabilidades académicas?",options:["No","Sí"]},
+  {mod:7,modN:7,type:"open",id:"m6q28b",seconds:90,text:"Si tendrás otras responsabilidades, descríbelas e indica cuántas horas por semana requieren. (Si respondiste No, escribe 'No aplica')",maxWords:80},
+  {mod:7,modN:7,type:"radio",id:"m6q29",seconds:90,text:"¿Cuántas horas semanales estimas que podrás dedicar a la práctica?",options:["Menos de 30 horas","Entre 30 y 39 horas","40 horas","Más de 40 horas"]},
+  {mod:7,modN:7,type:"open",id:"m6q30",seconds:90,text:"¿Tu universidad exige alguna condición particular para autorizar la práctica? (fechas, número de horas, convenio, documentación, etc.)",maxWords:100},
+  {mod:7,modN:7,type:"open",id:"m6q31",seconds:90,text:"¿En qué fecha podrías iniciar tu práctica? (dd/mm/aaaa)",maxWords:20}
 ];
 
 const TOTAL = questions.length;
