@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba Virtual · Accenture Song Interns 2027</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --ink: #1a1a2e;
+    --ink-light: #4a4a6a;
+    --paper: #f7f7fb;
+    --white: #ffffff;
+    --accent: #6c47ff;
+    --accent-dim: #ede8ff;
+    --danger: #d63f3f;
+    --danger-dim: #fdeaea;
+    --warn: #e07b00;
+    --warn-dim: #fff3e0;
+    --ok: #1c8f5b;
+    --ok-dim: #e6f7f0;
+    --border: #e2e2ec;
+    --radius: 12px;
+    --shadow: 0 2px 16px rgba(108,71,255,.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── LAYOUT ── */
+  .shell {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .logo-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 600; font-size: 15px; letter-spacing: -.5px;
+  }
+  .logo-name { font-size: 13px; color: var(--ink-light); font-weight: 500; letter-spacing: .02em; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 40px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+
+  h1.display {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; line-height: 1.25;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .subtitle { font-size: 14px; color: var(--ink-light); margin-bottom: 28px; }
+
+  /* ── SCREEN MANAGEMENT ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── ACCESS FORM ── */
+  .field { margin-bottom: 20px; }
+  label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--ink-light); }
+  input[type="text"], input[type="email"] {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 15px; font-family: inherit; color: var(--ink);
+    background: var(--paper); transition: border-color .15s;
+    outline: none;
+  }
+  input:focus { border-color: var(--accent); background: #fff; }
+  .error-msg { font-size: 13px; color: var(--danger); margin-top: 6px; display: none; }
+  .error-msg.show { display: block; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 28px; border: none; border-radius: 8px;
+    font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer;
+    transition: opacity .15s, transform .1s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: var(--accent); color: #fff; width: 100%; }
+  .btn-primary:hover { opacity: .9; }
+  .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { margin-bottom: 28px; }
+  .progress-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-light); margin-bottom: 6px; }
+  .progress-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .3s ease; }
+
+  /* ── TIMER ── */
+  .timer-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: var(--ok-dim);
+    border: 1px solid #b2e4cf;
+    font-size: 14px; font-weight: 500;
+    color: var(--ok);
+    margin-bottom: 24px;
+    transition: background .4s, color .4s, border-color .4s;
+  }
+  .timer-bar.warn { background: var(--warn-dim); color: var(--warn); border-color: #ffc57a; }
+  .timer-bar.danger { background: var(--danger-dim); color: var(--danger); border-color: #f5a5a5; }
+  .timer-clock { font-size: 20px; font-weight: 600; min-width: 36px; }
+  .timer-label { flex: 1; }
+  .timer-track { flex: 1; height: 4px; background: rgba(0,0,0,.1); border-radius: 2px; overflow: hidden; }
+  .timer-fill { height: 100%; background: currentColor; border-radius: 2px; transition: width 1s linear; }
+
+  /* ── MODULE HEADER ── */
+  .mod-header { margin-bottom: 28px; }
+  .mod-tag {
+    display: inline-block;
+    font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-dim);
+    padding: 3px 10px; border-radius: 20px; margin-bottom: 10px;
+  }
+  .mod-title { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1.3; margin-bottom: 6px; }
+  .mod-desc { font-size: 14px; color: var(--ink-light); }
+
+  /* ── QUESTION ── */
+  .question-block { margin-bottom: 32px; }
+  .question-num { font-size: 11px; font-weight: 600; color: var(--ink-light); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .question-text { font-size: 16px; line-height: 1.55; margin-bottom: 16px; }
+
+  /* Context box (tables, readings) */
+  .context-box {
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; font-size: 14px;
+  }
+  .context-box table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .context-box th { text-align: left; font-weight: 600; border-bottom: 1.5px solid var(--border); padding: 6px 8px; }
+  .context-box td { padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  .context-box tr:last-child td { border-bottom: none; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 13px 16px; border: 1.5px solid var(--border); border-radius: 8px;
+    cursor: pointer; font-size: 15px; line-height: 1.45;
+    transition: border-color .15s, background .15s;
+    background: var(--white);
+  }
+  .opt:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .opt.selected { border-color: var(--accent); background: var(--accent-dim); font-weight: 500; }
+  .opt.disabled { opacity: .5; pointer-events: none; }
+  .opt input[type="radio"] { display: none; }
+  .opt-letter {
+    width: 22px; height: 22px; border-radius: 50%; min-width: 22px;
+    background: var(--border); color: var(--ink-light);
+    font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center;
+  }
+  .opt.selected .opt-letter { background: var(--accent); color: #fff; }
+
+  /* Scale (Likert) */
+  .likert-row { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .likert-row:last-child { border-bottom: none; }
+  .likert-stmt { font-size: 14px; margin-bottom: 10px; }
+  .likert-scale { display: flex; gap: 8px; }
+  .likert-btn {
+    flex: 1; padding: 8px 4px; border: 1.5px solid var(--border); border-radius: 8px;
+    background: var(--white); font-size: 13px; font-weight: 500; cursor: pointer;
+    text-align: center; transition: all .15s; color: var(--ink-light);
+  }
+  .likert-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .likert-btn.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .likert-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-light); margin-top: 4px; }
+
+  /* Textarea */
+  textarea {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: inherit; font-size: 15px; color: var(--ink);
+    background: var(--paper); resize: vertical; min-height: 100px;
+    transition: border-color .15s; outline: none; line-height: 1.55;
+  }
+  textarea:focus { border-color: var(--accent); background: #fff; }
+  .word-count { font-size: 12px; color: var(--ink-light); margin-top: 4px; text-align: right; }
+
+  /* Timeout overlay */
+  .timeout-notice {
+    background: var(--danger-dim); border: 1px solid #f5a5a5;
+    border-radius: 8px; padding: 12px 16px;
+    font-size: 14px; color: var(--danger);
+    display: none; margin-bottom: 12px;
+  }
+  .timeout-notice.show { display: block; }
+
+  /* Nav */
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; }
+  .nav-info { font-size: 13px; color: var(--ink-light); }
+
+  /* Summary / end screen */
+  .end-icon { font-size: 48px; margin-bottom: 16px; }
+  .end-title { font-family: 'DM Serif Display', serif; font-size: 26px; margin-bottom: 8px; }
+  .end-body { font-size: 15px; color: var(--ink-light); margin-bottom: 24px; line-height: 1.7; }
+  .status-pill {
+    display: inline-block; padding: 4px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 600;
+  }
+  .pill-ok { background: var(--ok-dim); color: var(--ok); }
+  .pill-err { background: var(--danger-dim); color: var(--danger); }
+
+  /* Setup instructions */
+  .setup-card {
+    background: var(--ink); color: #e8e8f4; border-radius: var(--radius);
+    padding: 28px 32px; margin-bottom: 24px; font-size: 14px; line-height: 1.7;
+  }
+  .setup-card h3 { color: #fff; font-size: 16px; margin-bottom: 16px; font-family: 'DM Serif Display', serif; }
+  .setup-card ol { padding-left: 18px; }
+  .setup-card li { margin-bottom: 10px; }
+  .setup-card code {
+    background: rgba(255,255,255,.12); padding: 2px 7px; border-radius: 4px;
+    font-family: 'Courier New', monospace; font-size: 12px; color: #c5c5ff;
+  }
+  .setup-card .script-block {
+    background: #12122a; border-radius: 8px; padding: 16px;
+    font-family: 'Courier New', monospace; font-size: 12px; color: #a5d6a7;
+    white-space: pre; overflow-x: auto; margin: 12px 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 520px) {
+    .card { padding: 24px 18px; }
+    .setup-card { padding: 20px 18px; }
+    .likert-scale { gap: 4px; }
+  }
+
+  /* ── BLOCKED SCREEN ── */
+  .blocked-icon { font-size: 48px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="logo-bar">
+    <img src="data:image/png;base64,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" alt="Accenture Song" style="height:32px; object-fit:contain;">
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 0 – INSTRUCCIONES DE CONFIGURACIÓN
+  ════════════════════════════════════════════════ -->
+  <div id="screen-setup" class="screen active">
+    <div class="card">
+      <h1 class="display">Configuración inicial</h1>
+      <p class="subtitle">Completa estos pasos una sola vez antes de compartir la prueba con los candidatos.</p>
+    </div>
+
+    <div class="setup-card">
+      <h3>Paso 1 · Crea la hoja de Google Sheets</h3>
+      <ol>
+        <li>Ve a <code>sheets.google.com</code> → crea una nueva hoja llamada <strong>Resultados Interns 2027</strong>.</li>
+        <li>En la fila 1 deja los encabezados en blanco; el script los creará automáticamente al primer envío.</li>
+      </ol>
+    </div>
+
+    <div class="setup-card">
+      <h3>Paso 2 · Crea el Apps Script</h3>
+      <ol>
+        <li>Dentro de la hoja: menú <code>Extensiones → Apps Script</code>.</li>
+        <li>Borra el contenido del editor y pega este código:</li>
+      </ol>
+      <div class="script-block">const SHEET_NAME = "Respuestas";
+const CODES_SHEET = "Codigos";   // hoja con códigos válidos
+
+function doPost(e) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // --- hoja de respuestas ---
+    let sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
+
+    const data = JSON.parse(e.postData.contents);
+    const flat = flattenObject(data);
+
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["Timestamp", ...Object.keys(flat)]);
+    }
+    sheet.appendRow([new Date().toISOString(), ...Object.values(flat)]);
+
+    // --- marcar código como usado ---
+    let codesSheet = ss.getSheetByName(CODES_SHEET);
+    if (codesSheet) {
+      const codes = codesSheet.getDataRange().getValues();
+      for (let i = 1; i &lt; codes.length; i++) {
+        if (String(codes[i][0]).trim().toUpperCase() ===
+            String(data.codigo || "").trim().toUpperCase()) {
+          codesSheet.getRange(i + 1, 2).setValue("USADO");
+          break;
+        }
+      }
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: false, error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let codesSheet = ss.getSheetByName(CODES_SHEET);
+  if (!codesSheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ valid: false, reason: "no_codes_sheet" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  const code = String(e.parameter.code || "").trim().toUpperCase();
+  const rows = codesSheet.getDataRange().getValues();
+  for (let i = 1; i &lt; rows.length; i++) {
+    if (String(rows[i][0]).trim().toUpperCase() === code) {
+      const usado = String(rows[i][1]).trim().toUpperCase() === "USADO";
+      return ContentService
+        .createTextOutput(JSON.stringify({ valid: true, used: usado }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+  return ContentService
+    .createTextOutput(JSON.stringify({ valid: false }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function flattenObject(obj, prefix) {
+  prefix = prefix || "";
+  return Object.keys(obj).reduce((acc, k) => {
+    const pre = prefix ? prefix + "." + k : k;
+    if (typeof obj[k] === "object" && obj[k] !== null && !Array.isArray(obj[k])) {
+      Object.assign(acc, flattenObject(obj[k], pre));
+    } else {
+      acc[pre] = Array.isArray(obj[k]) ? obj[k].join(" | ") : obj[k];
+    }
+    return acc;
+  }, {});
+}</div>
+      <ol start="3">
+        <li>Haz clic en <code>Implementar → Nueva implementación</code>.</li>
+        <li>Tipo: <strong>Aplicación web</strong> · Ejecutar como: <strong>Yo</strong> · Acceso: <strong>Cualquier usuario</strong>.</li>
+        <li>Copia la URL que aparece (<em>Web App URL</em>) — la necesitarás en el Paso 4.</li>
+      </ol>
+    </div>
+
+    <div class="setup-card">
+      <h3>Paso 3 · Crea la hoja de códigos</h3>
+      <ol>
+        <li>En el mismo Google Sheet crea una segunda pestaña llamada <strong>Codigos</strong>.</li>
+        <li>Columna A: <code>codigo</code> (encabezado) + un código por fila, p. ej. <code>AS2027-001</code>.</li>
+        <li>Columna B: <code>estado</code> (encabezado) — déjala vacía; el script la llena automáticamente.</li>
+      </ol>
+    </div>
+
+    <div class="setup-card">
+      <h3>Paso 4 · Conecta el HTML con tu Sheet</h3>
+      <ol>
+        <li>Abre este archivo HTML en un editor de texto.</li>
+        <li>Busca la línea <code>const APPS_SCRIPT_URL = "PEGA_TU_URL_AQUI";</code></li>
+        <li>Reemplaza <code>PEGA_TU_URL_AQUI</code> con la URL copiada en el Paso 2.</li>
+        <li>Guarda el archivo y compártelo con los candidatos.</li>
+      </ol>
+    </div>
+
+    <button class="btn btn-primary" onclick="showScreen('screen-access')">
+      Ir a la prueba →
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 1 – ACCESO POR CÓDIGO
+  ════════════════════════════════════════════════ -->
+  <div id="screen-access" class="screen">
+    <div class="card">
+      <h1 class="display">Prueba virtual general</h1>
+      <p class="subtitle">Accenture Song · Proceso de selección de interns 2027</p>
+
+      <div class="field">
+        <label for="inp-code">Código de acceso único</label>
+        <input type="text" id="inp-code" placeholder="Ej. AS2027-001" autocomplete="off">
+        <div class="error-msg" id="err-code">Código inválido, ya utilizado, o no encontrado.</div>
+      </div>
+
+      <div class="field">
+        <label for="inp-nombre">Nombre completo</label>
+        <input type="text" id="inp-nombre" placeholder="Tu nombre y apellidos">
+      </div>
+
+      <div class="field">
+        <label for="inp-email">Correo electrónico</label>
+        <input type="email" id="inp-email" placeholder="correo@universidad.edu">
+      </div>
+
+      <button class="btn btn-primary" id="btn-access" onclick="handleAccess()">
+        Verificar y comenzar
+      </button>
+      <div style="margin-top:12px; font-size:13px; color:var(--ink-light); text-align:center;">
+        Cada código solo puede usarse una vez. La prueba no puede reiniciarse.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 1b – BLOQUEADO (código ya usado)
+  ════════════════════════════════════════════════ -->
+  <div id="screen-blocked" class="screen">
+    <div class="card" style="text-align:center;">
+      <div class="blocked-icon">🔒</div>
+      <h1 class="display">Acceso no disponible</h1>
+      <p class="end-body">Este código ya fue utilizado para completar la prueba. Si crees que es un error, comunícate con el equipo de selección de Accenture Song.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 2 – INTRO / INSTRUCCIONES
+  ════════════════════════════════════════════════ -->
+  <div id="screen-intro" class="screen">
+    <div class="card">
+      <div class="mod-tag">Instrucciones</div>
+      <h1 class="display">Antes de comenzar</h1>
+      <div style="font-size:15px; line-height:1.75; color:var(--ink-light);">
+        <p style="margin-bottom:12px;">Esta prueba tiene <strong style="color:var(--ink)">6 módulos</strong> y una duración estimada de <strong style="color:var(--ink)">55 minutos</strong>.</p>
+        <ul style="padding-left:20px; margin-bottom:12px;">
+          <li>Cada pregunta tiene <strong style="color:var(--ink)">60 segundos</strong> para responderse. Al agotarse el tiempo la prueba avanzará automáticamente.</li>
+          <li>Lee con atención antes de seleccionar.</li>
+          <li>Responde de manera individual. No uses herramientas de IA generativa.</li>
+          <li>Puedes usar calculadora básica y hacer apuntes en papel para ejercicios numéricos.</li>
+          <li>Una vez que avances no podrás retroceder.</li>
+        </ul>
+        <p>Al finalizar, tus respuestas se enviarán automáticamente.</p>
+      </div>
+      <div style="margin-top:28px;">
+        <button class="btn btn-primary" onclick="startExam()">Comenzar prueba →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 3 – PREGUNTAS (contenedor dinámico)
+  ════════════════════════════════════════════════ -->
+  <div id="screen-exam" class="screen">
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span id="prog-label">Pregunta 1 de 31</span>
+        <span id="prog-mod">Módulo 1</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="timer-bar" id="timer-bar">
+      <span class="timer-clock" id="timer-clock">60</span>
+      <span class="timer-label">segundos restantes</span>
+      <div class="timer-track"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+    </div>
+
+    <div class="timeout-notice" id="timeout-notice">
+      ⏱ Tiempo agotado. Tu respuesta fue registrada y la prueba avanzó automáticamente.
+    </div>
+
+    <div class="card" id="question-card">
+      <!-- Se rellena por JS -->
+    </div>
+
+    <div class="nav-bar">
+      <span class="nav-info" id="nav-info"></span>
+      <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()" style="width:auto;">
+        Siguiente →
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SCREEN 4 – FIN
+  ════════════════════════════════════════════════ -->
+  <div id="screen-end" class="screen">
+    <div class="card" style="text-align:center;">
+      <div class="end-icon" id="end-icon">✅</div>
+      <h1 class="end-title" id="end-title">Prueba completada</h1>
+      <p class="end-body" id="end-body">Tus respuestas fueron enviadas correctamente. El equipo de Accenture Song se pondrá en contacto contigo próximamente.</p>
+      <div id="end-status"></div>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+
+<script>
+// ════════════════════════════════════════════
+//  CONFIGURACIÓN  ← modifica solo esta línea
+// ════════════════════════════════════════════
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmzgpChdkc2y58Twi-W_D0uWQJF7t0QBbndeNiyvF86z2OZ1fXNGxMjVVRBs6wcksqPA/exec";
+
+// ════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ════════════════════════════════════════════
+let candidato = { nombre: "", email: "", codigo: "" };
+let answers = {};
+let currentQ = 0;
+let timerInterval = null;
+let secondsLeft = 60;
+const TOTAL_SECONDS = 60;
+
+// ════════════════════════════════════════════
+//  PREGUNTAS
+// ════════════════════════════════════════════
+const questions = [
+  // ── MÓDULO 1 ─────────────────────────────
+  {
+    mod: "Módulo 1", modN: 1,
+    type: "radio",
+    id: "m1q1",
+    context: `<table>
+      <tr><th>Aplicación</th><th>Mes 1 (miles)</th><th>Mes 6 (miles)</th></tr>
+      <tr><td>Muévete – bicicletas</td><td>25</td><td>60</td></tr>
+      <tr><td>UrbanGo – scooters</td><td>40</td><td>55</td></tr>
+      <tr><td>BusFácil – buses</td><td>90</td><td>85</td></tr>
+      <tr><td>RideCity – mototaxi</td><td>15</td><td>45</td></tr>
+    </table>`,
+    text: "¿Qué aplicación tuvo el mayor crecimiento porcentual entre el mes 1 y el mes 6?",
+    options: ["Muévete", "UrbanGo", "RideCity", "BusFácil"]
+  },
+  {
+    mod: "Módulo 1", modN: 1,
+    type: "radio",
+    id: "m1q2",
+    text: "¿Cuál fue la variación absoluta de BusFácil entre el mes 1 y el mes 6?",
+    options: ["-5 mil usuarios", "+5 mil usuarios", "-10 mil usuarios", "-15 mil usuarios"]
+  },
+  {
+    mod: "Módulo 1", modN: 1,
+    type: "radio",
+    id: "m1q3",
+    text: "Con la información de la tabla, ¿cuál conclusión NO se puede sustentar?",
+    options: [
+      "RideCity fue la aplicación con mayor crecimiento relativo",
+      "BusFácil fue la única aplicación que perdió usuarios",
+      "Los usuarios de BusFácil migraron hacia RideCity",
+      "UrbanGo tuvo un crecimiento moderado"
+    ]
+  },
+  {
+    mod: "Módulo 1", modN: 1,
+    type: "radio",
+    id: "m1q4",
+    context: `<table>
+      <tr><th>Motivo de devolución</th><th>%</th></tr>
+      <tr><td>El producto no correspondía a la descripción o foto</td><td>35%</td></tr>
+      <tr><td>Talla o tamaño incorrecto</td><td>24%</td></tr>
+      <tr><td>Cambio de opinión del comprador</td><td>20%</td></tr>
+      <tr><td>Producto dañado</td><td>14%</td></tr>
+      <tr><td>Otros motivos</td><td>7%</td></tr>
+    </table>`,
+    text: "¿Qué porcentaje de las devoluciones corresponde a problemas de información o calidad del producto? (descripción incorrecta + producto dañado)",
+    options: ["35%", "49%", "55%", "59%"]
+  },
+  {
+    mod: "Módulo 1", modN: 1,
+    type: "radio",
+    id: "m1q5",
+    text: "Si se registraron 500 devoluciones en el mes, ¿cuántas correspondieron a talla o tamaño incorrecto?",
+    options: ["100", "110", "120", "140"]
+  },
+  {
+    mod: "Módulo 1", modN: 1,
+    type: "radio",
+    id: "m1q6",
+    text: "¿Cuál es la lectura estratégica mejor sustentada por estos datos?",
+    options: [
+      "El marketplace debería invertir únicamente en más publicidad",
+      "Mejorar fotos, descripciones y cuidado del empaque podría reducir una parte relevante de las devoluciones",
+      "El principal problema es que los compradores cambian de opinión",
+      "No es posible proponer ninguna acción con esta información"
+    ]
+  },
+  {
+    mod: "Módulo 1", modN: 1,
+    type: "radio",
+    id: "m1q7",
+    text: "Una plataforma de streaming tenía 1,2 millones de suscriptores y creció 45% en un año. ¿Aproximadamente cuántos suscriptores tiene ahora?",
+    options: ["1,45 millones", "1,65 millones", "1,74 millones", "2,00 millones"]
+  },
+  {
+    mod: "Módulo 1", modN: 1,
+    type: "radio",
+    id: "m1q8",
+    text: "Una aplicación de ejercicio retiene cada mes al 85% de sus usuarios activos del mes anterior y no incorpora usuarios nuevos. Si hoy tiene 10.000 usuarios activos, ¿aproximadamente cuántos seguirán activos dentro de 3 meses?",
+    options: ["8.500", "7.225", "6.141", "5.000"]
+  },
+
+  // ── MÓDULO 2 ─────────────────────────────
+  {
+    mod: "Módulo 2", modN: 2,
+    type: "radio",
+    id: "m2q9",
+    context: `<p style="font-size:14px;line-height:1.7"><strong>Lectura 1 – Economía circular en retail</strong><br><br>
+    Cada vez más marcas de moda y consumo están adoptando modelos de economía circular, en los que buscan extender la vida útil de un producto en lugar de simplemente venderlo y reemplazarlo. Programas de recompra, reparación y reventa de artículos usados permiten a las empresas mantener el contacto con el cliente después de la primera compra, generar nuevos ingresos y responder a una creciente exigencia ambiental de los consumidores más jóvenes. Sin embargo, implementar estos programas no es sencillo: requiere logística inversa, sistemas para evaluar el estado de los productos devueltos y, en muchos casos, cambiar la forma en que se mide el éxito comercial, tradicionalmente basado solo en el volumen de ventas nuevas.</p>`,
+    text: "¿Cuál es la idea principal del texto?",
+    options: [
+      "Las marcas de moda ya no venden productos nuevos",
+      "La economía circular puede extender la vida útil y generar ingresos, pero implica retos operativos y de medición",
+      "Reparar productos usados siempre cuesta más que fabricarlos nuevos",
+      "Los consumidores jóvenes no valoran la sostenibilidad"
+    ]
+  },
+  {
+    mod: "Módulo 2", modN: 2,
+    type: "radio",
+    id: "m2q10",
+    text: "Según el texto anterior, ¿cuáles son dos retos para implementar estos programas?",
+    options: [
+      "Falta de interés de los consumidores y ausencia de canales digitales",
+      "Logística inversa y cambios en la medición del éxito comercial",
+      "Prohibiciones legales y falta de publicidad",
+      "Altos costos de medios y baja demanda"
+    ]
+  },
+  {
+    mod: "Módulo 2", modN: 2,
+    type: "radio",
+    id: "m2q11",
+    text: "¿Cuál es una inferencia razonable a partir del texto?",
+    options: [
+      "Una empresa que mida el éxito solo por ventas nuevas podría subestimar el valor de estos programas",
+      "Todas las marcas ya tienen programas de recompra",
+      "La economía circular no genera ingresos adicionales",
+      "Los consumidores jóvenes rechazan los productos usados"
+    ]
+  },
+  {
+    mod: "Módulo 2", modN: 2,
+    type: "radio",
+    id: "m2q12",
+    context: `<p style="font-size:14px;line-height:1.7"><strong>Lectura 2 – Aprendizaje híbrido en educación</strong><br><br>
+    El aprendizaje híbrido, que combina sesiones presenciales con contenido y actividades en línea, se ha convertido en el modelo preferido de muchas instituciones educativas. Sus defensores argumentan que permite personalizar el ritmo de cada estudiante y aprovechar mejor el tiempo en el aula para discusión y práctica, en lugar de exposiciones magistrales. No obstante, distintos estudios muestran resultados mixtos: el éxito del modelo depende en gran medida de la disciplina del estudiante para completar el contenido en línea y del acompañamiento docente durante ese proceso, más que del modelo en sí mismo.</p>`,
+    text: "¿Cuál es la idea principal del texto?",
+    options: [
+      "El aprendizaje híbrido siempre mejora los resultados académicos",
+      "El éxito del aprendizaje híbrido depende en gran medida de la disciplina y el acompañamiento, no solo del modelo",
+      "Las exposiciones magistrales ya no se usan",
+      "El aprendizaje en línea reemplazó al presencial"
+    ]
+  },
+  {
+    mod: "Módulo 2", modN: 2,
+    type: "radio",
+    id: "m2q13",
+    text: "Según el texto, ¿de qué depende principalmente el éxito del modelo híbrido?",
+    options: [
+      "Del número de computadores disponibles",
+      "De la disciplina del estudiante y el acompañamiento docente",
+      "Del precio de la matrícula",
+      "De la cantidad de tareas"
+    ]
+  },
+  {
+    mod: "Módulo 2", modN: 2,
+    type: "radio",
+    id: "m2q14",
+    text: "¿Cuál conclusión NO está respaldada por el texto?",
+    options: [
+      "El modelo puede aprovechar el aula para práctica y discusión",
+      "Los estudios muestran resultados mixtos",
+      "El modelo híbrido garantiza mejores resultados que el modelo presencial",
+      "La disciplina del estudiante influye en el resultado"
+    ]
+  },
+
+  // ── MÓDULO 3 ─────────────────────────────
+  {
+    mod: "Módulo 3", modN: 3,
+    type: "radio",
+    id: "m3q15",
+    context: `<p style="font-size:14px;line-height:1.7"><strong>Escenario – Streaming</strong><br>
+    Una plataforma reporta que su tasa de cancelación mensual subió de 4% a 9% en el último trimestre. El equipo concluye que el aumento se debe al incremento del precio de la suscripción realizado el mes pasado. Solo cuenta con la tasa de cancelación mensual y la fecha del cambio de precio.</p>`,
+    text: "¿Qué información es más crítica para validar o refutar la conclusión?",
+    options: [
+      "El número total de suscriptores",
+      "La tasa de cancelación de un grupo comparable que no tuvo aumento de precio durante el mismo periodo",
+      "El número de series estrenadas",
+      "El nombre de la agencia de publicidad"
+    ]
+  },
+  {
+    mod: "Módulo 3", modN: 3,
+    type: "open",
+    id: "m3q15b",
+    text: "¿Qué otro análisis propondrías para descartar causas alternativas del aumento de cancelaciones? (máximo 2 frases)",
+    maxWords: 80
+  },
+  {
+    mod: "Módulo 3", modN: 3,
+    type: "radio",
+    id: "m3q16",
+    context: `<p style="font-size:14px;line-height:1.7"><strong>Escenario – Educación</strong><br>
+    Una universidad nota que la tasa de finalización de sus cursos en línea bajó de 68% a 52% en un año y evalúa rediseñar su plataforma virtual. Solo cuenta con las tasas de finalización de ambos años.</p>`,
+    text: "¿Qué dato es más crítico antes de atribuir el problema a la plataforma?",
+    options: [
+      "El color y diseño gráfico de la plataforma",
+      "Los cambios en el perfil de los estudiantes matriculados",
+      "El nombre del proveedor tecnológico",
+      "La cantidad de servidores"
+    ]
+  },
+  {
+    mod: "Módulo 3", modN: 3,
+    type: "open",
+    id: "m3q16b",
+    text: "¿Qué análisis propondrías para identificar la causa de la caída? (máximo 2 frases)",
+    maxWords: 80
+  },
+  {
+    mod: "Módulo 3", modN: 3,
+    type: "radio",
+    id: "m3q17",
+    context: `<p style="font-size:14px;line-height:1.7"><strong>Escenario – Retail</strong><br>
+    Una cadena de tiendas de ropa evalúa abrir una sede en una ciudad donde aún no tiene presencia. Hasta ahora solo cuenta con el dato de población total.</p>`,
+    text: "¿Qué información es más crítica para tomar la decisión de expansión?",
+    options: [
+      "El nombre del alcalde",
+      "El perfil socioeconómico, los hábitos de compra y la competencia en la zona objetivo",
+      "El clima promedio",
+      "La cantidad de habitantes mayores de 80 años"
+    ]
+  },
+  {
+    mod: "Módulo 3", modN: 3,
+    type: "open",
+    id: "m3q17b",
+    text: "¿Qué análisis adicional propondrías antes de decidir la apertura? (máximo 2 frases)",
+    maxWords: 80
+  },
+  {
+    mod: "Módulo 3", modN: 3,
+    type: "radio",
+    id: "m3q18",
+    context: `<p style="font-size:14px;line-height:1.7"><strong>Escenario – Deporte y entretenimiento</strong><br>
+    Un equipo deportivo observa que la asistencia de aficionados de 18 a 25 años bajó 30% este año y concluye que se debe al aumento del precio de las boletas.</p>`,
+    text: "¿Qué dato es más crítico para validar esa conclusión?",
+    options: [
+      "Si el aumento afectó de manera diferente al segmento joven según tipo de boleta o zona",
+      "El resultado deportivo de la temporada anterior",
+      "El color de la camiseta",
+      "El número de patrocinadores"
+    ]
+  },
+  {
+    mod: "Módulo 3", modN: 3,
+    type: "open",
+    id: "m3q18b",
+    text: "¿Qué análisis propondrías para entender mejor la caída de asistencia joven? (máximo 2 frases)",
+    maxWords: 80
+  },
+
+  // ── MÓDULO 4 ─────────────────────────────
+  {
+    mod: "Módulo 4", modN: 4,
+    type: "radio",
+    id: "m4q19",
+    text: "Un cliente solicita un cambio de última hora sobre una entrega que debe salir en 2 horas. El equipo aún no termina la versión anterior. ¿Qué harías primero?",
+    options: [
+      "Aceptar el cambio y pedir al equipo que trabaje más rápido, sin aclarar impactos",
+      "Confirmar el impacto en tiempo y calidad y proponer alternativas de prioridad, alcance u horario",
+      "Decir que no es posible sin ofrecer alternativas",
+      "Ignorar la solicitud y continuar con el plan"
+    ]
+  },
+  {
+    mod: "Módulo 4", modN: 4,
+    type: "radio",
+    id: "m4q20",
+    text: "En un trabajo en equipo, una persona propone una idea que consideras débil, pero el resto la acepta por falta de tiempo. ¿Qué haces?",
+    options: [
+      "Guardas silencio para evitar conflicto",
+      "Explicas tu punto con una razón concreta, propones una alternativa breve y respetas la decisión final",
+      "Insistes en tu idea sin escuchar a los demás",
+      "Trabajas por tu cuenta en otra versión sin avisar"
+    ]
+  },
+  {
+    mod: "Módulo 4", modN: 4,
+    type: "radio",
+    id: "m4q21",
+    text: "Mientras analizas datos para una propuesta encuentras un número que no coincide con el resto. Verificarlo puede tomar más tiempo del disponible. ¿Qué haces?",
+    options: [
+      "Usas el dato para no retrasar la entrega",
+      "Lo marcas como pendiente de validación y comunicas la duda al equipo o responsable",
+      "Eliminas el dato sin decir nada",
+      "Lo reemplazas por un número que parezca coherente"
+    ]
+  },
+  {
+    mod: "Módulo 4", modN: 4,
+    type: "radio",
+    id: "m4q22",
+    text: "Durante una presentación, el panel te hace una pregunta para la que no tienes una respuesta clara. ¿Cómo reaccionas?",
+    options: [
+      "Improvisas una respuesta que suene segura",
+      "Reconoces que no tienes el dato exacto, compartes tu razonamiento con la información disponible y ofreces validarlo",
+      "Cambias de tema",
+      "Guardas silencio y esperas que alguien responda"
+    ]
+  },
+  {
+    mod: "Módulo 4", modN: 4,
+    type: "radio",
+    id: "m4q23",
+    text: "Faltan 20 minutos para presentar un pitch y el equipo aún no acuerda cómo cerrarlo. ¿Qué haces?",
+    options: [
+      "Propones una estructura simple, acuerdan responsables y reservan tiempo para practicar",
+      "Continúan discutiendo la mejor opción hasta el último minuto",
+      "Decides el cierre sin consultar",
+      "Sugieres improvisarlo durante la presentación"
+    ]
+  },
+
+  // ── MÓDULO 5 ─────────────────────────────
+  {
+    mod: "Módulo 5", modN: 5,
+    type: "open",
+    id: "m5q24",
+    text: "En máximo 80 palabras, propón una idea sencilla para que una marca de cualquier categoría conecte mejor con jóvenes de 18 a 24 años. Elige la categoría e incluye: necesidad u oportunidad, idea y forma de activación.",
+    maxWords: 80
+  },
+
+  // ── MÓDULO 6 ─────────────────────────────
+  {
+    mod: "Módulo 6", modN: 6,
+    type: "likert",
+    id: "m6_perfil",
+    text: "Indica qué tan de acuerdo estás con cada afirmación.<br><span style='font-size:13px;color:var(--ink-light)'>1 = Nada de acuerdo · 5 = Totalmente de acuerdo</span>",
+    items: [
+      { id: "l1", stmt: "Me interesa automatizar procesos de comunicación con clientes." },
+      { id: "l2", stmt: "Disfruto pensar en flujos y secuencias de mensajes más que en el contenido creativo." },
+      { id: "l3", stmt: "Disfruto trabajar con bases de datos y encontrar patrones." },
+      { id: "l4", stmt: "Prefiero responder preguntas con evidencia cuantitativa antes que con opiniones." },
+      { id: "l5", stmt: "Me interesa entender la tecnología detrás de una aplicación o plataforma." },
+      { id: "l6", stmt: "He programado o me gustaría aprender a hacerlo con mayor profundidad." },
+      { id: "l7", stmt: "Me gusta pensar cómo una marca se comunica y conecta con su público." },
+      { id: "l8", stmt: "Sigo tendencias de redes sociales, contenido y comportamiento digital." },
+      { id: "l9", stmt: "Me interesa entender por qué las personas actúan de cierta forma al usar un producto." },
+      { id: "l10", stmt: "Disfruto observar y analizar el comportamiento de usuarios más que crear el diseño final." },
+      { id: "l11", stmt: "Me gusta diseñar interfaces y experiencias visuales." },
+      { id: "l12", stmt: "Suelo fijarme en los detalles estéticos de una aplicación o pieza gráfica." },
+      { id: "l13", stmt: "Me interesa cómo las empresas organizan y gestionan la relación con sus clientes." },
+      { id: "l14", stmt: "Me atraen las plataformas de gestión de clientes más que el diseño visual." },
+      { id: "l15", stmt: "Prefiero pensar en la estrategia y el porqué detrás de una campaña o proyecto." },
+      { id: "l16", stmt: "Disfruto conectar datos con decisiones de negocio." }
+    ]
+  },
+  {
+    mod: "Módulo 6", modN: 6,
+    type: "open",
+    id: "m6q25",
+    text: "¿Qué tipo de proyecto te gustaría desarrollar durante tu práctica en Accenture Song? (máximo 4 líneas)",
+    maxWords: 120
+  },
+  {
+    mod: "Módulo 6", modN: 6,
+    type: "open",
+    id: "m6q26",
+    text: "Cuéntanos brevemente sobre un proyecto académico, extracurricular, laboral o personal del que te sientas orgulloso/a. ¿Cuál fue tu aporte? (máximo 5 líneas)",
+    maxWords: 150
+  },
+  {
+    mod: "Módulo 6", modN: 6,
+    type: "open",
+    id: "m6q27",
+    text: "¿Qué herramientas has utilizado? Puedes incluir hojas de cálculo, visualización, investigación, diseño, programación, automatización, analítica o gestión de proyectos. Indica tu nivel aproximado.",
+    maxWords: 120
+  },
+  {
+    mod: "Módulo 6", modN: 6,
+    type: "radio",
+    id: "m6q28",
+    text: "Durante el periodo de práctica, ¿tendrás materias, tesis, monitorías, actividades extracurriculares u otras responsabilidades académicas?",
+    options: ["No", "Sí"]
+  },
+  {
+    mod: "Módulo 6", modN: 6,
+    type: "open",
+    id: "m6q28b",
+    text: "Si tendrás otras responsabilidades, descríbelas e indica cuántas horas por semana requieren. (Si respondiste No, escribe 'No aplica')",
+    maxWords: 80
+  },
+  {
+    mod: "Módulo 6", modN: 6,
+    type: "radio",
+    id: "m6q29",
+    text: "¿Cuántas horas semanales estimas que podrás dedicar a la práctica?",
+    options: ["Menos de 30 horas", "Entre 30 y 39 horas", "40 horas", "Más de 40 horas"]
+  },
+  {
+    mod: "Módulo 6", modN: 6,
+    type: "open",
+    id: "m6q30",
+    text: "¿Tu universidad exige alguna condición particular para autorizar la práctica? (fechas, número de horas, convenio, documentación, etc.)",
+    maxWords: 100
+  },
+  {
+    mod: "Módulo 6", modN: 6,
+    type: "open",
+    id: "m6q31",
+    text: "¿En qué fecha podrías iniciar tu práctica? (dd/mm/aaaa)",
+    maxWords: 20
+  }
+];
+
+const TOTAL = questions.length;
+
+// ════════════════════════════════════════════
+//  UTILIDADES
+// ════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function countWords(str) {
+  return str.trim().split(/\s+/).filter(w => w.length > 0).length;
+}
+
+// ════════════════════════════════════════════
+//  ACCESO
+// ════════════════════════════════════════════
+async function handleAccess() {
+  const btn = document.getElementById('btn-access');
+  const code = document.getElementById('inp-code').value.trim();
+  const nombre = document.getElementById('inp-nombre').value.trim();
+  const email = document.getElementById('inp-email').value.trim();
+  const errEl = document.getElementById('err-code');
+
+  errEl.classList.remove('show');
+
+  if (!code || !nombre || !email) {
+    errEl.textContent = "Completa todos los campos para continuar.";
+    errEl.classList.add('show'); return;
+  }
+
+  // Si no se ha configurado la URL aún
+  if (APPS_SCRIPT_URL === "PEGA_TU_URL_AQUI") {
+    // Modo demo: acepta cualquier código
+    candidato = { nombre, email, codigo: code };
+    showScreen('screen-intro');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Verificando…";
+
+  try {
+    const res = await fetch(`${APPS_SCRIPT_URL}?code=${encodeURIComponent(code)}`);
+    const data = await res.json();
+
+    if (!data.valid) {
+      errEl.textContent = "Código no reconocido. Verifica e inténtalo de nuevo.";
+      errEl.classList.add('show');
+    } else if (data.used) {
+      showScreen('screen-blocked');
+      return;
+    } else {
+      candidato = { nombre, email, codigo: code };
+      showScreen('screen-intro');
+    }
+  } catch(e) {
+    errEl.textContent = "Error de conexión. Revisa tu internet e inténtalo de nuevo.";
+    errEl.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Verificar y comenzar";
+  }
+}
+
+// ════════════════════════════════════════════
+//  INICIO DEL EXAMEN
+// ════════════════════════════════════════════
+function startExam() {
+  currentQ = 0;
+  answers = {};
+  showScreen('screen-exam');
+  renderQuestion();
+}
+
+// ════════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════════
+function renderQuestion() {
+  clearTimer();
+  document.getElementById('timeout-notice').classList.remove('show');
+
+  const q = questions[currentQ];
+  const pct = Math.round((currentQ / TOTAL) * 100);
+
+  document.getElementById('prog-label').textContent = `Pregunta ${currentQ + 1} de ${TOTAL}`;
+  document.getElementById('prog-mod').textContent = q.mod;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('nav-info').textContent = `${q.mod} · ${currentQ + 1}/${TOTAL}`;
+
+  const card = document.getElementById('question-card');
+  let html = '';
+
+  // Context box
+  if (q.context) {
+    html += `<div class="context-box">${q.context}</div>`;
+  }
+
+  html += `<div class="question-block">`;
+  html += `<div class="question-num">${q.mod} · Pregunta ${currentQ + 1}</div>`;
+  html += `<div class="question-text">${q.text}</div>`;
+
+  if (q.type === 'radio') {
+    const letters = ['a', 'b', 'c', 'd', 'e'];
+    html += `<div class="options">`;
+    q.options.forEach((opt, i) => {
+      html += `<label class="opt" id="opt-${i}" onclick="selectOpt(${i})">
+        <input type="radio" name="q" value="${i}">
+        <span class="opt-letter">${letters[i]}</span>
+        <span>${opt}</span>
+      </label>`;
+    });
+    html += `</div>`;
+
+  } else if (q.type === 'open') {
+    const maxW = q.maxWords || 100;
+    html += `<textarea id="open-ans" placeholder="Escribe tu respuesta aquí…" 
+        oninput="updateWordCount(this, ${maxW})" rows="5"></textarea>
+      <div class="word-count" id="wc-display">0 / ${maxW} palabras</div>`;
+
+  } else if (q.type === 'likert') {
+    html += `<div>`;
+    q.items.forEach(item => {
+      html += `<div class="likert-row">
+        <div class="likert-stmt">${item.stmt}</div>
+        <div class="likert-scale">`;
+      for (let v = 1; v <= 5; v++) {
+        html += `<button class="likert-btn" id="lk-${item.id}-${v}" 
+          onclick="selectLikert('${item.id}', ${v})">${v}</button>`;
+      }
+      html += `</div>
+        <div class="likert-labels"><span>Nada de acuerdo</span><span>Totalmente de acuerdo</span></div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `</div>`; // question-block
+  card.innerHTML = html;
+
+  // Restore prior answer if exists
+  restoreAnswer(q);
+
+  startTimer();
+}
+
+function restoreAnswer(q) {
+  const saved = answers[q.id];
+  if (!saved) return;
+
+  if (q.type === 'radio' && saved.index !== undefined) {
+    const el = document.getElementById('opt-' + saved.index);
+    if (el) el.classList.add('selected');
+  } else if (q.type === 'open') {
+    const ta = document.getElementById('open-ans');
+    if (ta) { ta.value = saved.value || ''; updateWordCount(ta, q.maxWords || 100); }
+  } else if (q.type === 'likert') {
+    if (saved.values) {
+      Object.entries(saved.values).forEach(([id, val]) => {
+        const btn = document.getElementById(`lk-${id}-${val}`);
+        if (btn) btn.classList.add('selected');
+      });
+    }
+  }
+}
+
+// ════════════════════════════════════════════
+//  SELECCIÓN
+// ════════════════════════════════════════════
+function selectOpt(i) {
+  document.querySelectorAll('.opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('opt-' + i).classList.add('selected');
+  const q = questions[currentQ];
+  answers[q.id] = { index: i, value: q.options[i] };
+}
+
+function selectLikert(itemId, val) {
+  for (let v = 1; v <= 5; v++) {
+    const b = document.getElementById(`lk-${itemId}-${v}`);
+    if (b) b.classList.remove('selected');
+  }
+  const b = document.getElementById(`lk-${itemId}-${val}`);
+  if (b) b.classList.add('selected');
+
+  const q = questions[currentQ];
+  if (!answers[q.id]) answers[q.id] = { values: {} };
+  answers[q.id].values[itemId] = val;
+}
+
+function updateWordCount(ta, max) {
+  const wc = countWords(ta.value);
+  const el = document.getElementById('wc-display');
+  if (el) {
+    el.textContent = `${wc} / ${max} palabras`;
+    el.style.color = wc > max ? 'var(--danger)' : 'var(--ink-light)';
+  }
+}
+
+// ════════════════════════════════════════════
+//  TIMER
+// ════════════════════════════════════════════
+function startTimer() {
+  secondsLeft = TOTAL_SECONDS;
+  updateTimerUI();
+
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerUI();
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      saveCurrentAnswer();
+      document.getElementById('timeout-notice').classList.add('show');
+      disableQuestion();
+      setTimeout(nextQuestion, 1800);
+    }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  const pct = (secondsLeft / TOTAL_SECONDS) * 100;
+  document.getElementById('timer-clock').textContent = secondsLeft;
+  document.getElementById('timer-fill').style.width = pct + '%';
+
+  const bar = document.getElementById('timer-bar');
+  bar.classList.remove('warn', 'danger');
+  if (secondsLeft <= 10) bar.classList.add('danger');
+  else if (secondsLeft <= 20) bar.classList.add('warn');
+}
+
+function clearTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function disableQuestion() {
+  document.querySelectorAll('.opt').forEach(el => el.classList.add('disabled'));
+  const ta = document.getElementById('open-ans');
+  if (ta) ta.disabled = true;
+  document.querySelectorAll('.likert-btn').forEach(b => b.disabled = true);
+  document.getElementById('btn-next').disabled = true;
+}
+
+// ════════════════════════════════════════════
+//  GUARDAR & AVANZAR
+// ════════════════════════════════════════════
+function saveCurrentAnswer() {
+  const q = questions[currentQ];
+  if (q.type === 'open') {
+    const ta = document.getElementById('open-ans');
+    if (ta && !answers[q.id]) answers[q.id] = { value: ta.value };
+    else if (ta) answers[q.id].value = ta.value;
+  }
+  // radio and likert already saved on interaction
+}
+
+function nextQuestion() {
+  clearTimer();
+  saveCurrentAnswer();
+  document.getElementById('btn-next').disabled = false;
+
+  currentQ++;
+  if (currentQ >= TOTAL) {
+    submitExam();
+  } else {
+    renderQuestion();
+  }
+}
+
+// ════════════════════════════════════════════
+//  ENVÍO
+// ════════════════════════════════════════════
+async function submitExam() {
+  showScreen('screen-end');
+  document.getElementById('end-icon').textContent = '⏳';
+  document.getElementById('end-title').textContent = 'Enviando respuestas…';
+  document.getElementById('end-body').textContent = 'Por favor no cierres esta ventana.';
+
+  const payload = {
+    candidato: candidato,
+    codigo: candidato.codigo,
+    timestamp: new Date().toISOString(),
+    respuestas: answers
+  };
+
+  if (APPS_SCRIPT_URL === "PEGA_TU_URL_AQUI") {
+    // Modo demo
+    setTimeout(() => showSuccess(), 800);
+    return;
+  }
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.ok) showSuccess();
+    else showError(data.error);
+  } catch(e) {
+    showError(e.message);
+  }
+}
+
+function showSuccess() {
+  document.getElementById('end-icon').textContent = '✅';
+  document.getElementById('end-title').textContent = 'Prueba completada';
+  document.getElementById('end-body').textContent =
+    'Tus respuestas fueron enviadas correctamente. El equipo de Accenture Song se pondrá en contacto contigo próximamente. Puedes cerrar esta ventana.';
+  document.getElementById('end-status').innerHTML =
+    '<span class="status-pill pill-ok">Enviado correctamente</span>';
+}
+
+function showError(msg) {
+  document.getElementById('end-icon').textContent = '⚠️';
+  document.getElementById('end-title').textContent = 'Error al enviar';
+  document.getElementById('end-body').innerHTML =
+    `Hubo un problema al guardar tus respuestas. Captura esta pantalla y contáctanos.<br><br>
+    <code style="font-size:12px;color:var(--danger)">${msg}</code>`;
+  document.getElementById('end-status').innerHTML =
+    '<span class="status-pill pill-err">Error de envío</span>';
+}
+
+// ════════════════════════════════════════════
+//  ANTI-REGRESO (bloquea el botón Atrás)
+// ════════════════════════════════════════════
+history.pushState(null, null, location.href);
+window.addEventListener('popstate', () => {
+  history.pushState(null, null, location.href);
+});
+
+// Arranca directo en el formulario de acceso
+showScreen('screen-access');
+</script>
+</body>
+</html>
