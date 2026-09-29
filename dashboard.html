@@ -87,7 +87,7 @@ tr:hover td{background:var(--s2);}
 .info-sub{font-size:13px;color:var(--ink2);margin-top:2px;}
 
 /* PROFILE SECTION */
-.prof-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.prof-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:20px;}
 .prof-card{background:var(--s);border:1px solid var(--bd);border-radius:var(--r);padding:20px 24px;}
 .prof-title{font-size:11px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;}
 .prof-main{font-size:18px;font-weight:700;margin-bottom:6px;}
@@ -97,14 +97,7 @@ tr:hover td{background:var(--s2);}
 .bar-track{flex:1;height:5px;background:var(--bd);border-radius:3px;overflow:hidden;}
 .bar-fill{height:100%;border-radius:3px;}
 .bar-val{min-width:28px;color:var(--ink2);}
-.gallup-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
-.gallup-card{background:var(--s2);border-radius:8px;padding:12px;text-align:center;border-top:3px solid;}
-.g-rank{font-size:10px;color:var(--ink2);margin-bottom:2px;}
-.g-score{font-size:22px;font-weight:700;line-height:1;}
-.g-lbl{font-size:12px;font-weight:600;margin-top:4px;}
-.g-en{font-size:10px;color:var(--ink2);}
-.g-bar{height:3px;background:var(--bd);border-radius:2px;margin-top:6px;overflow:hidden;}
-.g-fill{height:100%;border-radius:2px;}
+
 
 /* SECTION TITLE */
 .stl{font-size:11px;font-weight:600;color:var(--ink2);letter-spacing:.06em;text-transform:uppercase;margin:24px 0 12px;padding-top:4px;}
@@ -203,8 +196,7 @@ tr:hover td{background:var(--s2);}
         <div class="tw"><table>
           <thead><tr>
             <th>#</th><th>Candidato</th><th>Universidad / Carrera / Sem.</th>
-            <th>Disponibilidad</th><th>Perfil</th><th>Gallup top 2</th>
-            <th>MCQ</th><th>%</th><th></th>
+            <th>Disponibilidad</th><th>Perfil</th>            <th>MCQ</th><th>%</th><th></th>
           </tr></thead>
           <tbody id="tb-r"><tr><td colspan="9"><div class="ld"><div class="sp"></div>Cargando...</div></td></tr></tbody>
         </table></div>
@@ -334,7 +326,7 @@ async function loadData(){
   document.getElementById('last-upd').textContent='Actualizado: '+new Date().toLocaleTimeString('es-CO');
 }
 
-function g(c,f){return String(c[f]||'').trim();}
+function g(c,f){var v=c[f];return(v===undefined||v===null||v==='undefined'||v==='null')?'':String(v).trim();}
 function lv(c,id){var v=parseInt(c['respuestas.m6_perfil.values.'+id]);return isNaN(v)?0:v;}
 function bw(v){return Math.round(v/5*100)+'%';}
 
@@ -362,251 +354,6 @@ function funcProfile(c){
   ];
   profiles.sort(function(a,b){return b.v-a.v;});
   return {top:profiles[0],all:profiles};
-}
-
-function gallupStr(c){
-  return [
-    {label:'Responsabilidad',en:'Responsibility',v:Math.round((lv(c,'l1')+lv(c,'l13')+lv(c,'l4'))/3*10)/10,color:'#9333ea'},
-    {label:'Aprendizaje',en:'Learner',v:Math.round((lv(c,'l3')+lv(c,'l5')+lv(c,'l6'))/3*10)/10,color:'#0891b2'},
-    {label:'Ideacion',en:'Ideation',v:Math.round((lv(c,'l7')+lv(c,'l8')+lv(c,'l11'))/3*10)/10,color:'#16a34a'},
-    {label:'Mando',en:'Command',v:Math.round((lv(c,'l15')+lv(c,'l16')+lv(c,'l14'))/3*10)/10,color:'#d97706'},
-    {label:'Seguridad',en:'Self-Assurance',v:Math.round((lv(c,'l9')+lv(c,'l10')+lv(c,'l12'))/3*10)/10,color:'#dc2626'}
-  ].sort(function(a,b){return b.v-a.v;});
-}
-
-function renderStats(){
-  document.getElementById('st-n').textContent=ALL.length;
-  if(!ALL.length){['st-avg','st-best','st-hoy'].forEach(function(id){document.getElementById(id).textContent='-';});return;}
-  var sc=ALL.map(mcqScore);
-  document.getElementById('st-avg').textContent=(sc.reduce(function(a,b){return a+b;},0)/ALL.length).toFixed(1)+'/23';
-  document.getElementById('st-best').textContent=Math.max.apply(null,sc)+'/23';
-  var today=new Date().toDateString();
-  var n=ALL.filter(function(c){return new Date(c.Timestamp).toDateString()===today;}).length;
-  document.getElementById('st-hoy').textContent=n+' de '+ALL.length;
-}
-
-function renderRanking(){
-  var tb=document.getElementById('tb-r');
-  if(!ALL.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--ink2)">Sin datos.</td></tr>';return;}
-  var sorted=ALL.map(function(c,i){return{c:c,s:mcqScore(c),i:i};}).sort(function(a,b){return b.s-a.s;});
-  var rows='';
-  sorted.forEach(function(item,rank){
-    var c=item.c; var s=item.s;
-    var pct=Math.round(s/23*100);
-    var cls=pct>=70?'phi':pct>=50?'pmi':'plo';
-    var fp=funcProfile(c); var ga=gallupStr(c);
-    var top2=ga.slice(0,2).map(function(x){return '<span style="color:'+x.color+';font-weight:600;font-size:11px">'+x.label+'</span>';}).join(' + ');
-    var nombre=g(c,'candidato.nombre')||g(c,'nombre')||'-';
-    var cod=g(c,'candidato.codigo')||g(c,'codigo')||'';
-    var uni=g(c,'candidato.universidad')||'-';
-    var car=g(c,'candidato.carrera')||'-';
-    var sem=g(c,'candidato.semestre')||'-';
-    var horas=g(c,'respuestas.m6q29.value')||'-';
-    var inicio=g(c,'respuestas.m6q31.value')||'-';
-    var otrasr=g(c,'respuestas.m6q28.value');
-    var disponTag=otrasr==='No'?'<span style="color:var(--ok);font-size:11px;font-weight:600">Solo practica</span>':'<span style="color:var(--warn);font-size:11px;font-weight:600">Otras actividades</span>';
-    rows+='<tr>'
-      +'<td style="color:var(--ink2)">'+(rank+1)+'</td>'
-      +'<td><strong>'+nombre+'</strong><br><span style="font-size:11px;color:var(--ink2)">'+cod+'</span></td>'
-      +'<td style="font-size:12px">'+uni+'<br><span style="color:var(--ink2)">'+car+' - Sem. '+sem+'</span></td>'
-      +'<td style="font-size:12px">'+horas+'<br><span style="color:var(--ink2)">Inicio: '+inicio+'</span><br>'+disponTag+'</td>'
-      +'<td><span class="pill" style="background:'+fp.top.bg+';color:'+fp.top.color+'">'+fp.top.label+'</span></td>'
-      +'<td>'+top2+'</td>'
-      +'<td><span class="pill '+cls+'">'+s+' / 23</span></td>'
-      +'<td>'+pct+'%</td>'
-      +'<td><button class="bdet" onclick="openDet('+item.i+')">Ver detalle</button></td>'
-      +'</tr>';
-  });
-  tb.innerHTML=rows;
-}
-
-function renderModulos(){
-  var tb=document.getElementById('tb-m');
-  if(!ALL.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--ink2)">Sin datos.</td></tr>';return;}
-  function ms(c,ks){return ks.filter(function(k){var v=parseInt(c['respuestas.'+k+'.index']);return !isNaN(v)&&v===CORRECT[k].i;}).length;}
-  function bar(s,max){var p=Math.round(s/max*100);var col=p>=70?'var(--ok)':p>=50?'var(--warn)':'var(--err)';return'<div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:5px;background:var(--bd);border-radius:3px;overflow:hidden"><div style="width:'+p+'%;height:100%;background:'+col+';border-radius:3px"></div></div><span style="font-size:12px;min-width:30px">'+s+'/'+max+'</span></div>';}
-  var M1=['m1q1','m1q2','m1q3','m1q4','m1q5','m1q6','m1q7','m1q8'];
-  var M2=['m2q9','m2q10','m2q11','m2q12','m2q13','m2q14'];
-  var M3=['m3q15','m3q16','m3q17','m3q18'];
-  var M4=['m4q19','m4q20','m4q21','m4q22','m4q23'];
-  var sorted=ALL.map(function(c){return{c:c,s:mcqScore(c)};}).sort(function(a,b){return b.s-a.s;});
-  var rows='';
-  sorted.forEach(function(item){
-    var c=item.c; var s1=ms(c,M1),s2=ms(c,M2),s3=ms(c,M3),s4=ms(c,M4),tot=s1+s2+s3+s4;
-    var pct=Math.round(tot/23*100); var cls=pct>=70?'phi':pct>=50?'pmi':'plo';
-    rows+='<tr>'
-      +'<td><strong>'+(g(c,'candidato.nombre')||g(c,'nombre')||'-')+'</strong></td>'
-      +'<td>'+bar(s1,8)+'</td><td>'+bar(s2,6)+'</td><td>'+bar(s3,4)+'</td><td>'+bar(s4,5)+'</td>'
-      +'<td><span class="pill '+cls+'">'+tot+'/23</span></td>'
-      +'</tr>';
-  });
-  tb.innerHTML=rows;
-}
-
-function swTab(t){
-  document.getElementById('tab-r').classList.toggle('on',t==='r');
-  document.getElementById('tab-m').classList.toggle('on',t==='m');
-  document.getElementById('pnl-r').style.display=t==='r'?'block':'none';
-  document.getElementById('pnl-m').style.display=t==='m'?'block':'none';
-}
-
-function openDet(idx){
-  var c=ALL[idx];
-  if(!c)return;
-  renderDet(c);
-  document.getElementById('vw-list').style.display='none';
-  document.getElementById('vw-det').style.display='block';
-  window.scrollTo(0,0);
-}
-
-function showList(){
-  document.getElementById('vw-det').style.display='none';
-  document.getElementById('vw-list').style.display='block';
-}
-
-function renderDet(c){
-  var s=mcqScore(c); var pct=Math.round(s/23*100);
-  var cls=pct>=70?'phi':pct>=50?'pmi':'plo';
-  var cod=g(c,'candidato.codigo')||g(c,'codigo')||'';
-  var nombre=g(c,'candidato.nombre')||g(c,'nombre')||'-';
-  var email=g(c,'candidato.email')||g(c,'email')||'';
-  var uni=g(c,'candidato.universidad')||'-';
-  var car=g(c,'candidato.carrera')||'-';
-  var sem=g(c,'candidato.semestre')||'-';
-  var horas=g(c,'respuestas.m6q29.value')||'-';
-  var inicio=g(c,'respuestas.m6q31.value')||'-';
-  var otrasr=g(c,'respuestas.m6q28.value');
-  var otrasd=g(c,'respuestas.m6q28b.value')||'-';
-  var soloP=otrasr==='No';
-  var fecha=c.Timestamp?new Date(c.Timestamp).toLocaleString('es-CO'):'-';
-  var fp=funcProfile(c); var ga=gallupStr(c);
-
-  // 1. CANDIDATE HEADER
-  document.getElementById('det-hdr').innerHTML=
-    '<div class="cand-hdr">'
-    +'<div class="cand-top">'
-      +'<div>'
-        +'<div class="cand-name">'+nombre+'</div>'
-        +'<div class="cand-sub">'+email+' &nbsp;|&nbsp; '+cod+' &nbsp;|&nbsp; '+fecha+'</div>'
-      +'</div>'
-      +'<span class="pill '+cls+'" style="font-size:20px;padding:10px 20px">'+s+'/23 &nbsp;·&nbsp; '+pct+'%</span>'
-    +'</div>'
-    +'<div class="info-grid">'
-      +'<div class="info-item"><div class="info-label">Universidad</div><div class="info-val">'+uni+'</div></div>'
-      +'<div class="info-item"><div class="info-label">Carrera</div><div class="info-val">'+car+'</div><div class="info-sub">Semestre '+sem+'</div></div>'
-      +'<div class="info-item"><div class="info-label">Horas disponibles</div><div class="info-val">'+horas+'</div></div>'
-      +'<div class="info-item"><div class="info-label">Fecha de inicio</div><div class="info-val">'+inicio+'</div></div>'
-      +'<div class="info-item"><div class="info-label">Durante la practica</div>'
-        +'<div class="info-val" style="color:'+(soloP?'var(--ok)':'var(--warn)')+'">'+( soloP?'Solo practica':'Otras actividades')+'</div>'
-        +(soloP?'':'<div class="info-sub">'+otrasd+'</div>')
-      +'</div>'
-    +'</div>'
-    +'</div>';
-
-  // 2. PROFILES
-  var profBars=fp.all.map(function(p){
-    return '<div class="bar-row">'
-      +'<span class="bar-lbl" style="color:'+p.color+';font-weight:600">'+p.label+'</span>'
-      +'<div class="bar-track"><div class="bar-fill" style="width:'+bw(p.v)+';background:'+p.color+'"></div></div>'
-      +'<span class="bar-val">'+p.v.toFixed(1)+'</span>'
-      +'</div>';
-  }).join('');
-
-  var gallupCards=ga.map(function(x,i){
-    return '<div class="gallup-card" style="border-top-color:'+x.color+'">'
-      +'<div class="g-rank">#'+(i+1)+'</div>'
-      +'<div class="g-score" style="color:'+x.color+'">'+x.v.toFixed(1)+'</div>'
-      +'<div class="g-lbl">'+x.label+'</div>'
-      +'<div class="g-en">'+x.en+'</div>'
-      +'<div class="g-bar"><div class="g-fill" style="width:'+bw(x.v)+';background:'+x.color+'"></div></div>'
-      +'</div>';
-  }).join('');
-
-  document.getElementById('det-prof').innerHTML=
-    '<div class="prof-grid">'
-    +'<div class="prof-card">'
-      +'<div class="prof-title">Perfil funcional dominante</div>'
-      +'<div class="prof-main" style="color:'+fp.top.color+'">'+fp.top.label+'</div>'
-      +'<div class="prof-desc">'+fp.top.desc+'</div>'
-      +profBars
-    +'</div>'
-    +'<div class="prof-card">'
-      +'<div class="prof-title">Fortalezas Gallup</div>'
-      +'<div class="gallup-grid">'+gallupCards+'</div>'
-    +'</div>'
-    +'</div>';
-
-  // 3. MCQ
-  document.getElementById('det-mcq').innerHTML=MCQ.map(function(k){
-    var idx2=parseInt(c['respuestas.'+k+'.index']);
-    var val=c['respuestas.'+k+'.value']||'-';
-    var ok=!isNaN(idx2)&&idx2===CORRECT[k].i;
-    return '<div class="mcq-item '+(ok?'ok':'nok')+'">'
-      +'<div class="mcq-id">'+k.toUpperCase()+' '+(ok?'CORRECTA':'INCORRECTA')+'</div>'
-      +'<div class="mcq-a">'+val+' <span style="color:'+(ok?'var(--ok)':'var(--err)')+';">'+(ok?'V':'X')+'</span></div>'
-      +(!ok?'<div class="mcq-ca">Correcta: '+CORRECT[k].l+'</div>':'')
-      +'</div>';
-  }).join('');
-
-  // 4. OPEN QUESTIONS
-  var sco=SC[cod]||{};
-  document.getElementById('det-open').innerHTML=OPEN_Q.map(function(q){
-    var ans=c['respuestas.'+q.k+'.value']||c['respuestas.'+q.k]||'';
-    var saved=sco[q.k]!==undefined?sco[q.k]:'';
-    var rubricHtml='';
-    if(q.rubric24){
-      var cr=CR24[cod]||{};
-      rubricHtml='<div class="rubric-box">'
-        +'<div class="rubric-title">Rubrica de evaluacion (1=Insuficiente, 2=Basico, 3=Bueno, 4=Sobresaliente)</div>'
-        +[
-          {id:'claridad',label:'Claridad',desc:'1=No se entiende | 2=Se entiende con esfuerzo | 3=Clara y bien delimitada | 4=Muy clara, concreta y coherente'},
-          {id:'originalidad',label:'Originalidad',desc:'1=Generica o copiada | 2=Variacion predecible | 3=Combina elementos de forma interesante | 4=Enfoque distintivo e inesperado'},
-          {id:'viabilidad',label:'Viabilidad',desc:'1=No ejecutable | 2=Poco realista | 3=Ejecutable con recursos razonables | 4=Ejecutable con buena relacion impacto-esfuerzo'},
-          {id:'conexion',label:'Conexion con el publico',desc:'1=No identifica necesidad | 2=Conexion superficial | 3=Responde a una necesidad | 4=Comprension clara del publico'}
-        ].map(function(crit){
-          var v=cr[crit.id]||0;
-          var btns=[1,2,3,4].map(function(n){
-            return '<button class="cr-btn'+(v===n?' sel':'')+'" data-cod="'+escH(cod)+'" data-crit="'+crit.id+'" data-val="'+n+'" onclick="setCR24btn(this)">'+n+'</button>';
-          }).join('');;
-          return '<div style="margin-bottom:10px">'
-            +'<div style="font-size:12px;font-weight:600;margin-bottom:2px">'+crit.label+'</div>'
-            +'<div style="font-size:11px;color:var(--ink2);margin-bottom:4px">'+crit.desc+'</div>'
-            +'<div class="cr-scores">'+btns+'</div>'
-            +'</div>';
-        }).join('')
-        +'<div style="margin-top:8px;font-size:13px;font-weight:600">Total: <span id="cr24-total-'+escH(cod)+'">'+calcCR24Total(cod)+'</span>/16 pts</div>'
-        +'</div>';
-    } else if(q.ra||q.rs){
-      rubricHtml='<div class="rubric-box">'
-        +(q.ra?'<div class="rubric-title">Respuestas aceptables</div><div style="margin-bottom:6px">'+q.ra+'</div>':'')
-        +(q.rs?'<div class="rubric-title">Senal de respuesta solida</div><div>'+q.rs+'</div>':'')
-        +'</div>';
-    }
-    return '<div class="open-card">'
-      +'<div class="open-head">'
-        +'<div class="open-qlbl">'+q.l+'</div>'
-        +(saved?'<span class="pill phi">Nota: '+saved+'/5</span>':'<span style="font-size:12px;color:var(--ink2)">Sin calificar</span>')
-      +'</div>'
-      +'<div class="open-body">'
-        +rubricHtml
-        +'<div class="open-ans">'+(ans||'<em>Sin respuesta</em>')+'</div>'
-        +'<div class="score-widget">'
-          +'<button class="bai" onclick="evalAI(this)" data-cod="'+escH(cod)+'" data-k="'+escH(q.k)+'" data-ans="'+escH(ans)+'" data-lbl="'+escH(q.l)+'">Evaluar con IA</button>'
-          +'<span class="score-lbl">o califica manualmente (1-5):</span>'
-          +'<input class="sinp" type="number" min="1" max="5" step="0.5" id="sc-'+q.k+'-'+escH(cod)+'" value="'+saved+'" placeholder="1-5">'
-          +'<button class="sbtn" onclick="saveScore(this)" data-cod="'+escH(cod)+'" data-k="'+escH(q.k)+'">Guardar</button>'
-        +'</div>'
-        +'<div class="ai-box" id="ai-'+q.k+'-'+escH(cod)+'"></div>'
-      +'</div>'
-      +'</div>';
-  }).join('');
-
-  // 5. LIKERT
-  document.getElementById('det-likert').innerHTML=LIKERT.map(function(item){
-    var v=lv(c,item.id);
-    var col=v>=4?'var(--ok)':v>=3?'var(--warn)':'var(--ink2)';
-    return '<div class="likert-row"><div class="likert-stmt">'+item.s+'</div><div class="likert-val" style="color:'+col+'">'+v+'</div></div>';
-  }).join('');
 }
 
 function escH(s){return String(s).replace(/&/g,'and').replace(/"/g,'').replace(/</g,'').replace(/>/g,'');}

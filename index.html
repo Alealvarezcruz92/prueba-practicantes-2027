@@ -485,7 +485,19 @@ async function submitExam(){
   document.getElementById('end-icon').textContent='⏳';
   document.getElementById('end-title').textContent='Enviando respuestas…';
   document.getElementById('end-body').textContent='Por favor no cierres esta ventana.';
-  const payload={candidato,codigo:candidato.codigo,timestamp:new Date().toISOString(),respuestas:answers};
+  const payload={
+    candidato:{
+      nombre:candidato.nombre,
+      email:candidato.email,
+      codigo:candidato.codigo,
+      universidad:candidato.universidad,
+      carrera:candidato.carrera,
+      semestre:candidato.semestre
+    },
+    codigo:candidato.codigo,
+    timestamp:new Date().toISOString(),
+    respuestas:answers
+  };
   try{
     const res=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
     const data=await res.json();
